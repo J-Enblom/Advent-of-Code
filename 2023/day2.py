@@ -16,7 +16,8 @@ def part1(data):
         for i in split_game:
             split_shard = i.split(",")
             for shard in split_shard:
-                if int(shard.split()[0]) > max_shards[shard.split()[1]]:
+                amount, color = shard.split()
+                if int(amount) > max_shards[color]:
                     valid = False
         
         if valid:
@@ -36,8 +37,9 @@ def part2(data):
         for i in split_game:
             split_shard = i.split(",")
             for shard in split_shard:
-                if int(shard.split()[0]) > min_shards[shard.split()[1]]:
-                    min_shards[shard.split()[1]] = int(shard.split()[0])
+                amount, color = shard.split()
+                if int(amount) > min_shards[color]:
+                    min_shards[color] = int(amount)
         
         sum = 1
         for key in min_shards.keys():
