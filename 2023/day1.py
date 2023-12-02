@@ -37,9 +37,8 @@ help_dict = {
     "7":7,
     "8":8,
     "9":9
-
 }
- 
+
 def part2(data):
     total = 0
     for line in data:
