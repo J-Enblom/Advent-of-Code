@@ -5,53 +5,55 @@ def input():
     return lines
 
 def part1(data):
-    card = []
+    cards = []
     winning = []
     for line in data:
-        card.append(line.split(":")[1].split("|")[0].split(" "))
+        cards.append(line.split(":")[1].split("|")[0].split(" "))
         winning.append(line.split(":")[1].split("|")[1].split(" "))
     
     total = 0
-    for x in range(len(card)):
+    for card in range(len(cards)):
         first = True
         score = 0
-        for number in card[x]:
-            if number.isdigit() and number in winning[x]:
+        for number in cards[card]:
+            if number.isdigit() and number in winning[card]:
                 if first:
                     score +=1
                     first = False
                 else:
                     score *=2
-        total +=score
+        total += score
 
     return total
 
 def part2(data):
-    card = []
+    cards = []
     winning = []
     for line in data:
-        card.append(line.split(":")[1].split("|")[0].split(" "))
+        cards.append(line.split(":")[1].split("|")[0].split(" "))
         winning.append(line.split(":")[1].split("|")[1].split(" "))
     
     total = 0
     amount = {}
-    for x in range(len(card)):
+    for card in range(len(cards)):
         count = 0
         copy = 0
-        if x in amount.keys():
-                copy = amount[x]
+        original = 1
+        if card in amount.keys():
+                copy = amount[card]
         
-        for number in card[x]:
+        for number in cards[card]:
             
-            if number.isdigit() and number in winning[x]:
+            if number.isdigit() and number in winning[card]:
                 count += 1
-                if x + count in amount.keys():
-                    current = amount[x + count]
-                    amount[x + count] = current + 1 + copy
+                index = card + count
+                if index in amount.keys():
+                    current = amount[index]
+                    amount[index] = current + original + copy
                 else:
-                    amount[x + count] = 1 + copy
+                    amount[index] = original + copy
 
-        total += copy + 1
+        total += original + copy
 
     return total
 
