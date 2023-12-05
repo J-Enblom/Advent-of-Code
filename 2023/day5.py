@@ -58,9 +58,8 @@ def part1(data):
     return min(final)
 
 
-def fill_map(dict, key, start, ranges):
+def fill_map(dict, key, starts, ranges):
     result = []
-    length = len(start)
     search = []
     new_key = "stop"
     for keys in dict.keys():
@@ -70,20 +69,20 @@ def fill_map(dict, key, start, ranges):
             break
     search.sort(key = lambda x: x[1])
         
-    for i in range(length):
-        s = start[i]
-        e = ranges[i] + s
+    for i in range(len(starts)):
+        start = starts[i]
+        end = ranges[i] + start
         
-        while s != e :
-            for m in search:
-                if s >= m[1] and s < m[1] + m[2]:
-                    if (e > m[2] + m[1]):
-                        result.append((s, new_key, m[2] - (s-m[1])))
-                        s += m[2] - (s-m[1])
-            result.append((s, new_key, e - s))
-            s = e
-            
-            
+        while start != end :
+            for match in search:
+                match_start = match[1]
+                match_range = match[2]
+                if start >= match_start and start < match_start + match_range:
+                    if (end > match_range + match_start):
+                        result.append((start, new_key, match_range - (start-match_start)))
+                        start += match_range - (start-match_start)
+            result.append((start, new_key, end - start))
+            start = end
 
     return result
 
@@ -94,12 +93,14 @@ def part2(data):
     final = []
     ranges = []
     seeds = []
+
     for num in range(len(dict["seeds"])):
         if num%2 == 0:
             seeds.append(dict["seeds"][num])
         else:
             ranges.append(dict["seeds"][num])
-    seeds = fill_map(dict, "seed", seeds, ranges)
+    seeds = fill_map(dict, current, seeds, ranges)
+
     while len(seeds)> 0:
         curr = seeds.pop(0)
         if curr[1] == goal:
@@ -107,7 +108,6 @@ def part2(data):
         else:
             seed, current = convert(dict, curr[0], curr[1])
             seeds += fill_map(dict, current, [seed], [curr[2]])
-
 
     return min(final)
 
