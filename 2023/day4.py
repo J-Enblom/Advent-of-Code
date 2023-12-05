@@ -4,54 +4,50 @@ def input():
         lines = text.split("\n")
     return lines
 
-def part1(data):
+def parse(data):
     cards = []
     winning = []
+
     for line in data:
-        cards.append(line.split(":")[1].split("|")[0].split(" "))
-        winning.append(line.split(":")[1].split("|")[1].split(" "))
-    
+        split_line = line.split(":")[1].split("|")
+        cards.append(split_line[0].split())
+        winning.append(split_line[1].split())
+
+    return cards, winning
+
+def part1(data):
+    cards, winning = parse(data)
     total = 0
+
     for card in range(len(cards)):
-        first = True
-        score = 0
+        count = -1
         for number in cards[card]:
-            if number.isdigit() and number in winning[card]:
-                if first:
-                    score +=1
-                    first = False
-                else:
-                    score *=2
-        total += score
+            if number in winning[card]:
+                count += 1
+        if count >= 0:
+            total += 2 ** (count)
 
     return total
 
 def part2(data):
-    cards = []
-    winning = []
-    for line in data:
-        cards.append(line.split(":")[1].split("|")[0].split(" "))
-        winning.append(line.split(":")[1].split("|")[1].split(" "))
-    
+    cards, winning = parse(data)
     total = 0
     amount = {}
+
     for card in range(len(cards)):
         count = 0
         copy = 0
         original = 1
         if card in amount.keys():
-                copy = amount[card]
+            copy = amount[card]
         
         for number in cards[card]:
             
-            if number.isdigit() and number in winning[card]:
+            if number in winning[card]:
                 count += 1
                 index = card + count
-                if index in amount.keys():
-                    current = amount[index]
-                    amount[index] = current + original + copy
-                else:
-                    amount[index] = original + copy
+                current = amount[index] if index in amount.keys() else 0
+                amount[index] = current + original + copy
 
         total += original + copy
 
