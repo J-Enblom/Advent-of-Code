@@ -9,10 +9,10 @@ def input():
 def part1(data):
     total = 0
     for line in data:
-        res = [int(num) for num in re.findall(r"\d+", line)]
+        res = [int(num) for num in line if num.isdigit()]
         if len(res) > 0:
-            firstDigit = int(str(res[0])[:1])
-            secondDigit = res[-1]%10
+            firstDigit = res[0]
+            secondDigit = res[-1]
             total += firstDigit*10 + secondDigit
 
     return total
@@ -49,7 +49,6 @@ def part2(data):
         if len(res) > 0:
             line_tot = res[0][0]*10 + res[-1][0]
             total += line_tot
-
 
     return total
 
