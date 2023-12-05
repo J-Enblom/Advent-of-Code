@@ -57,8 +57,7 @@ def part1(data):
 
     return min(final)
 
-
-def fill_map(dict, key, starts, ranges):
+def fill_helper(dict, key, start, end):
     result = []
     search = []
     new_key = "stop"
@@ -68,12 +67,8 @@ def fill_map(dict, key, starts, ranges):
             new_key = keys[0]
             break
     search.sort(key = lambda x: x[1])
-        
-    for i in range(len(starts)):
-        start = starts[i]
-        end = ranges[i] + start
-        
-        while start != end :
+
+    while start != end :
             for match in search:
                 match_start = match[1]
                 match_range = match[2]
@@ -83,7 +78,17 @@ def fill_map(dict, key, starts, ranges):
                         start += match_range - (start-match_start)
             result.append((start, new_key, end - start))
             start = end
+    return result
 
+
+def fill_map(dict, key, starts, ranges):
+    result = []
+        
+    for i in range(len(starts)):
+        start = starts[i]
+        end = ranges[i] + start
+        result += fill_helper(dict, key, start, end)
+        
     return result
 
 def part2(data):
@@ -107,7 +112,7 @@ def part2(data):
             final.append(curr[0])
         else:
             seed, current = convert(dict, curr[0], curr[1])
-            seeds += fill_map(dict, current, [seed], [curr[2]])
+            seeds += fill_helper(dict, current, seed, seed + curr[2])
 
     return min(final)
 
