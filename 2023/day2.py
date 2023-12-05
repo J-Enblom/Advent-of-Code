@@ -2,13 +2,15 @@ def input():
     with open('input.txt', 'r') as file:
         text = file.read()
         lines = text.split("\n")
-    return lines
+    return lines  
 
-def part1(data):
+def solution(data):
     max_shards = {"red":12,"green":13, "blue":14}
+    total_1 = 0
+    total_2 = 0
 
-    total = 0
     for line in data:
+        min_shards={"red": 0, "blue": 0, "green": 0}
         valid = True
         first_split = line.split(":")
         index = [int(s) for s in first_split[0].split() if s.isdigit()][0]
@@ -19,37 +21,20 @@ def part1(data):
                 amount, color = shard.split()
                 if int(amount) > max_shards[color]:
                     valid = False
-        
-        if valid:
-            total+=index
-
-                
-    return total
-
-def part2(data):
-
-    total = 0
-    for line in data:
-        min_shards={"red": 0, "blue": 0, "green": 0}
-
-        first_split = line.split(":")
-        split_game = first_split[1].split(";")
-        for i in split_game:
-            split_shard = i.split(",")
-            for shard in split_shard:
-                amount, color = shard.split()
                 if int(amount) > min_shards[color]:
                     min_shards[color] = int(amount)
         
+        if valid:
+            total_1+=index
         sum = 1
         for key in min_shards.keys():
             sum*=min_shards[key]
-        total+= sum
-
+        total_2+= sum
                 
-    return total
+    return total_1, total_2
 
 if __name__ == "__main__":
     data = input()
-    print("part 1:", part1(data))
-    print("part 2:", part2(data))
+    result1, result2 = solution(data)
+    print("part 1:", result1)
+    print("part 2:", result2)

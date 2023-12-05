@@ -80,7 +80,6 @@ def fill_helper(dict, key, start, end):
             start = end
     return result
 
-
 def fill_map(dict, key, starts, ranges):
     result = []
         
