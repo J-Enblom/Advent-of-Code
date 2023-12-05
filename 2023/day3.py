@@ -8,28 +8,28 @@ def part1(data):
     symbols = []
     total = 0
     for line in data:
-        symbols.append([x for x in list(line)])
+        symbols.append(list(line))
+
     for y in range(len(symbols)):
-        lock = -1
-        for x in range(len(symbols[y])):
-            if x <= lock:
-                continue
+        x = 0
+        while x < len(symbols[y]):
             current = symbols[y][x]
             if current.isdigit():
                 top = max(y-1, 0)
                 bottom = min(y+1, len(symbols))
                 left = max(x-1,0)
+
                 while x+1< len(symbols[y]):
                     if (symbols[y][x+1].isdigit()):
-                        current += symbols[y][x+1]
                         x += 1
-                        lock = x
+                        current += symbols[y][x]
                     else:
                         break
+                
                 right = min(x+2, len(symbols))
-                ncol = symbols[top:bottom+1]
+                col_amount = symbols[top:bottom+1]
                 res = []
-                for col in ncol:
+                for col in col_amount:
                     res += col[left:right]
                 check = False
                 for symbol in res:
@@ -38,6 +38,7 @@ def part1(data):
                     if symbol != "." and not symbol.isdigit():
                         total += int(current)
                         check = True
+            x += 1
                 
     return total
 
@@ -45,7 +46,7 @@ def part2(data):
     symbols = []
     total = 0
     for line in data:
-        symbols.append([x for x in list(line)])
+        symbols.append(list(line))
     for y in range(len(symbols)):
         for x in range(len(symbols[y])):
             current = symbols[y][x]
@@ -54,9 +55,9 @@ def part2(data):
                 bottom = min(y+1, len(symbols))
                 left = max(x-3,0)
                 right = min(x+3, len(symbols))
-                ncol = symbols[top:bottom+1]
+                col_amount = symbols[top:bottom+1]
                 res = []
-                for col in ncol:
+                for col in col_amount:
                     res.append(col[left:right+1])
                 numbers = []
                 for ny in range (0,3):
@@ -78,7 +79,6 @@ def part2(data):
                                         n += res[ny][nx+2]
                             if n not in numbers:
                                 numbers.append(n)
-                print(numbers)
                 if len(numbers )>1:
                     total += int(numbers[0]) * int(numbers[-1])
     return total
