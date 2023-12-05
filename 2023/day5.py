@@ -27,7 +27,7 @@ def parse(data):
     return dic_map
 
 def convert(dict, number, current):
-    conversion = ""
+    conversion = "stop"
     con_map = []
     for key in dict.keys():
         if key[0] == current:
@@ -58,12 +58,39 @@ def part1(data):
     return min(final)
 
 
+def fill_map(dict, key, start, ranges):
+    result = []
+    length = len(start)
+    search = []
+    new_key = "stop"
+    for keys in dict.keys():
+        if key == keys[0]:
+            search = dict[keys]
+            new_key = keys[0]
+            break
+    search.sort(key = lambda x: x[1])
+        
+    for i in range(length):
+        s = start[i]
+        e = ranges[i] + s
+        
+        while s != e :
+            for m in search:
+                if s >= m[1] and s < m[1] + m[2]:
+                    if (e > m[2] + m[1]):
+                        result.append((s, new_key, m[2] - (s-m[1])))
+                        s += m[2] - (s-m[1])
+            result.append((s, new_key, e - s))
+            s = e
+            
+            
 
+    return result
 
 def part2(data):
     dict = parse(data)
     current = "seed"
-    goal = "location"
+    goal = "stop"
     final = []
     ranges = []
     seeds = []
@@ -72,24 +99,15 @@ def part2(data):
             seeds.append(dict["seeds"][num])
         else:
             ranges.append(dict["seeds"][num])
-    visited = {}
-    for key in dict.keys():
-        if key != "seeds":
-            visited[key[1]] = []
-    visited["seed"] = [] #8:42
-        
-    for i in range(len(seeds)):
-        for r in range(ranges[i]):
-            seed = seeds[i] + r
-            while current != goal:
-                if seed in visited[current]:
-                    break
-                visited[current].append(seed)
-                seed, current = convert(dict, seed, current)
-            if current == goal:
-                final.append(seed)
-            current = "seed"
-            
+    seeds = fill_map(dict, "seed", seeds, ranges)
+    while len(seeds)> 0:
+        curr = seeds.pop(0)
+        if curr[1] == goal:
+            final.append(curr[0])
+        else:
+            seed, current = convert(dict, curr[0], curr[1])
+            seeds += fill_map(dict, current, [seed], [curr[2]])
+
 
     return min(final)
 
