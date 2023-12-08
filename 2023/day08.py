@@ -1,4 +1,4 @@
-import math
+from math import gcd
 
 def input():
     with open('input.txt', 'r') as file:
@@ -34,30 +34,32 @@ def part1(data):
     return taken
 
 def part2(data):
-    direction, paths = parse(data)
+    input, paths = parse(data)
     current = []
     for key in paths.keys():
         if key[-1] == "A":
             current.append(key)
-    index = 0
-    step = 0
-    while True:
-        destination = 0
-        if index == len(direction):
-            index = 0
-        for path in range(len(current)):
-            if direction[index] == "L":
-                current[path] = paths[current[path]][0]
-            else:
-                current[path] = paths[current[path]][1]
 
-        step += 1
-        index += 1
+    goal = []
+    for path in current:
+        step = 0
+        while path[-1] != "Z":
+            for direction in input:
+                if direction == "L":
+                    path = paths[path][0]
+                    step += 1
+                else:
+                    path = paths[path][1]
+                    step += 1
+                if path[-1] == "Z":
+                        break
+        goal.append(step)
+    
+    lcm = 1
+    for i in goal:
+        lcm = lcm*i//gcd(lcm,i)
 
-        if destination == len(current):
-            break
-
-    return step
+    return lcm
 
 if __name__ == "__main__":
     data = input()
