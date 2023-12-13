@@ -23,15 +23,15 @@ def find_vertical(pattern):
     length = len(pattern[0])
     index = 0
     for i in range(length - 1):
-        vert = True
+        errors = 0
         for x in range(length):
             left = i -x
             right = i + 1 + x
             if 0<=left<right<length:
                 for row in range(len(pattern)):
                     if pattern[row][left] != pattern[row][right]:
-                        vert = False
-        if vert:
+                        errors += 1
+        if errors == 1:
             index = i+1
     return index
 
@@ -46,11 +46,20 @@ def rec_horizontal(patternf, patternb):
 
 
 def find_horizontal(pattern):
-    check = 0
-    for i in range(len(pattern) -1):
-        if pattern[i] == pattern[i +1]:
-            if rec_horizontal(pattern[:i], pattern[i + 2:]):
-                check = (i + 1) * 100
+    length = len(pattern)
+    index = 0
+    for i in range(length - 1):
+        errors = 0
+        for x in range(length):
+            up = i -x
+            down = i + 1 + x
+            if 0<=up<down<length:
+                for col in range(len(pattern[0])):
+                    if pattern[up][col] != pattern[down][col]:
+                        errors += 1
+        if errors == 1:
+            index = (i+1)*100
+    return index
 
     return check
 def part1(data):
