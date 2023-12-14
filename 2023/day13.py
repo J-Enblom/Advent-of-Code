@@ -61,7 +61,6 @@ def find_horizontal(pattern):
             index = (i+1)*100
     return index
 
-    return check
 def part1(data):
     total = 0
     input = parse(data)
