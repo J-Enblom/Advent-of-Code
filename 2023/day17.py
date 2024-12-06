@@ -12,7 +12,7 @@ def parse(data):
     for line in data:
         x = 0
         for cost in line:
-            node = {"coord": (y,x), "dir": (), "cost": (inf, int(cost))}
+            node = {"coord": (y,x), "dir": ((0,0), 0), "cost": (inf, int(cost))}
             res.append(node)
             x +=1
         y +=1
@@ -21,17 +21,21 @@ def parse(data):
 def find_neighbours(current, unvisited):
     cx = current["coord"][1]
     cy = current["coord"][0]
+    cdx = current["dir"][0][1]
+    cdy = current["dir"][0][0]
     neighbours = []
     for node in unvisited:
         nx = node["coord"][1]
         ny = node["coord"][0]
-        if abs(nx-cx) + abs(ny-cy) == 1:
+        ndx = node["dir"][0][1]
+        ndy = node["dir"][0][0]
+        if abs(nx-cx) + abs(ny-cy) == 1 and not (cdx + ndx == 0 and cdy + ndy == 0):
             neighbours.append(node)
 
     return neighbours
 
 
-def calc_dist(current, neighbours):
+def calc_dist(current, neighbours, open_set):
     cost = current["cost"][0] + current["cost"][1]
     for node in neighbours:
         dir = (node["coord"][0] - current["coord"][0], node["coord"][1] - current["coord"][1])
@@ -41,11 +45,19 @@ def calc_dist(current, neighbours):
                 continue
             else:
                 new_dir = (dir, count + 1)
+                if cost < node["cost"][0]:
+                    node["dir"] = new_dir
+                    node["cost"] = (cost, node["cost"][1])
+                    if node not in open_set:
+                        open_set.append(node)
         else:
-            new_dir = (dir, 1)
-        if cost < node["cost"][0]:
-            node["dir"] = new_dir
-            node["cost"] = (cost, node["cost"][1])
+            new_node = {}
+            new_node["coord"] = node["coord"]
+            new_node["dir"] = (dir, 1)
+            new_node["cost"] = (cost, node["cost"][1])
+            if new_node not in open_set:
+                open_set.append(new_node)
+            
         
 
 def find_next(unvisited):
@@ -57,27 +69,51 @@ def find_next(unvisited):
             next = node
     return next
 
+def add_nodes(open_set, nodes):
+    for node in open_set:
+        if node not in open_set:
+            nodes.append(node)
+
+def debug_path(visited):
+    current = visited[-1]
+    path = []
+    while True:
+        path.insert(0, current)
+        if current["coord"]== (0,0):
+            break
+        cy = current["coord"][0] - current["dir"][0][0]
+        cx = current["coord"][1] - current["dir"][0][1]
+        for node in visited:
+            if node["coord"] == (cy, cx) and node["cost"][0] == current["cost"][0] - node["cost"][1]:
+                current = node
+                break
+
+    for node in path:
+        print(node)
 
 def part1(data):
-    unvisited = parse(data)
-    visited = []
-    start = unvisited[0]
-    start["cost"] = (0, start["cost"][1])
+    nodes = parse(data)
+    path = []
+    open_set = []
+    start = nodes[0]
+    start["cost"] = (0, 0)
     start["dir"] = ((0,1), 1)
-    goal = unvisited[-1]
-    goal_visited = False
+    goal = nodes[-1]
+    open_set.append(start)
     current = start
-    while not goal_visited:
-        neighbours = find_neighbours(current, unvisited)
-        calc_dist(current, neighbours)
-        visited.append(current)
-        unvisited.remove(current)
-        if goal in visited:
-            goal_visited = True
-        print(current)
-        current = find_next(unvisited)
+    while open_set:
+        if current["coord"] == goal["coord"]:
+            path.append(current)
+            break
+        neighbours = find_neighbours(current, nodes)
+        calc_dist(current, neighbours, open_set)
+        open_set.remove(current)
+        path.append(current)
+        current = find_next(open_set)
 
-    return None
+    debug_path(path)
+
+    return current["cost"][0] + current["cost"][1]
 
 def part2(data):
     return None
