@@ -46,10 +46,6 @@ def part1(data):
 
     return tot
 
-def part2(data):
-    return None
-
 if __name__ == "__main__":
     data = input()
     print("part 1:", part1(data))
-    print("part 2:", part2(data))
