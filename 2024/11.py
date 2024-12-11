@@ -24,27 +24,20 @@ def iterate(stones, i, r):
             size = len(stone)
             amount = stones[stone]
             if stone == "0":
-                if "1" not in n_stones.keys():
-                    n_stones["1"] = amount
-                else:
-                    n_stones["1"] += amount
+                n = "1"
             elif size%2 == 0:
                 left = str(int(stone[0:size//2]))
-                right = str(int(stone[size//2:]))
+                n = str(int(stone[size//2:]))
                 if left not in n_stones.keys():
                     n_stones[left] = amount
                 else:
                     n_stones[left] += amount
-                if right not in n_stones.keys():
-                    n_stones[right] = amount
-                else:
-                    n_stones[right] += amount
             else:
-                v = str(int(stone)*2024)
-                if v not in n_stones.keys():
-                    n_stones[v] = amount
-                else:
-                    n_stones[v] += amount
+                n = str(int(stone)*2024)
+            if n not in n_stones.keys():
+                n_stones[n] = amount
+            else:
+                n_stones[n] += amount
         iterate(n_stones, i, r)
 
 
